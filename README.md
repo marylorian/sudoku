@@ -17,8 +17,7 @@ The app includes nine playable levels:
 - `npm run lint` runs ESLint.
 - `npm run typecheck` runs TypeScript checks.
 - `npm run test` runs Jest tests.
-- `npm run test:a11y` runs accessibility-focused tests.
-- `npm run e2e` starts Expo Web and runs Cypress against every level.
+- `npm run e2e` exports the web build and runs Cypress accessibility and level tests.
 - `npm run publish:android` builds and submits Android with EAS.
 - `npm run publish:ios` builds and submits iOS with EAS.
 - `npm run publish:stores` builds and submits both stores.

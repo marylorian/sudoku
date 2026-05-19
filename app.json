@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Sudoku Levels",
+    "slug": "sudoku-levels",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "sudokulevels",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.sudokulevels"
+    },
+    "android": {
+      "package": "com.example.sudokulevels",
+      "adaptiveIcon": {
+        "backgroundColor": "#f8fafc"
+      }
+    },
+    "web": {
+      "output": "single"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "replace-with-your-eas-project-id"
+      }
+    }
+  }
+}
