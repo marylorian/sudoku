@@ -1,25 +1,18 @@
 import { Pressable, Text, View } from 'react-native';
 
-import { LevelPicker } from '../LevelPicker';
 import type { Level } from '../../types';
 import styles from './styles';
 
 type Props = {
   nextLevel: Level;
-  selectedLevelId: string;
-  showLevelPicker: boolean;
   onStartNextLevel: () => void;
-  onToggleLevelPicker: () => void;
-  onSelectLevel: (level: Level) => void;
+  onChooseLevel: () => void;
 };
 
 export function MainMenu({
   nextLevel,
-  selectedLevelId,
-  showLevelPicker,
   onStartNextLevel,
-  onToggleLevelPicker,
-  onSelectLevel
+  onChooseLevel
 }: Props) {
   return (
     <View style={styles.wrapper} testID="main-menu">
@@ -45,23 +38,13 @@ export function MainMenu({
 
         <Pressable
           accessibilityRole="button"
-          onPress={onToggleLevelPicker}
+          onPress={onChooseLevel}
           style={styles.secondaryButton}
           testID="choose-level-button"
         >
           <Text style={styles.secondaryButtonText}>Choose a level</Text>
         </Pressable>
       </View>
-
-      {showLevelPicker ? (
-        <View style={styles.levelSection} testID="main-menu-levels">
-          <Text style={styles.sectionTitle}>Choose from existing levels</Text>
-          <LevelPicker
-            selectedLevelId={selectedLevelId}
-            onSelectLevel={onSelectLevel}
-          />
-        </View>
-      ) : null}
     </View>
   );
 }

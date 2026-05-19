@@ -21,6 +21,7 @@ describe('GameResultModal', () => {
 
     expect(screen.getByText('Congratulations!')).toBeOnTheScreen();
     expect(screen.getByText('Next level')).toBeOnTheScreen();
+    expect(screen.getByText('Go to main menu')).toBeOnTheScreen();
 
     fireEvent.press(screen.getByTestId('next-level-button'));
     fireEvent.press(screen.getByTestId('main-menu-button'));
@@ -45,7 +46,9 @@ describe('GameResultModal', () => {
     );
 
     expect(screen.getByText('Not quite')).toBeOnTheScreen();
-    expect(screen.getByText('Retry')).toBeOnTheScreen();
+    expect(screen.getByText('↻ Retry')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Retry')).toBeOnTheScreen();
+    expect(screen.getByText('Go to main menu')).toBeOnTheScreen();
 
     fireEvent.press(screen.getByTestId('retry-button'));
     fireEvent.press(screen.getByTestId('main-menu-button'));

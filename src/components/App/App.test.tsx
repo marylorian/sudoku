@@ -42,14 +42,29 @@ describe('App', () => {
     expect(screen.getByLabelText('Number pad')).toBeOnTheScreen();
   });
 
-  it('chooses levels from the main menu level list', () => {
+  it('chooses levels from the level selection screen', () => {
     render(<App />);
 
     fireEvent.press(screen.getByText('Choose a level'));
+
+    expect(screen.getByTestId('level-select-screen')).toBeOnTheScreen();
+    expect(
+      screen.getByRole('header', { name: 'Choose from existing levels' })
+    ).toBeOnTheScreen();
+
     fireEvent.press(screen.getByLabelText('9 x 9 hard level'));
 
     expect(screen.getByText('9 x 9 board, hard difficulty')).toBeOnTheScreen();
     expect(screen.getByLabelText('9 by 9 sudoku board')).toBeOnTheScreen();
+  });
+
+  it('returns from level selection to the main menu', () => {
+    render(<App />);
+
+    fireEvent.press(screen.getByText('Choose a level'));
+    fireEvent.press(screen.getByTestId('back-to-menu-button'));
+
+    expect(screen.getByTestId('main-menu')).toBeOnTheScreen();
   });
 
   it('enters a number into a selected editable cell', () => {

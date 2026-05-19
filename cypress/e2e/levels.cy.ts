@@ -31,26 +31,29 @@ describe('Sudoku levels', () => {
 
   it('confirms before resetting user-added numbers', () => {
     cy.get('[data-testid="start-next-level"]').click();
-    cy.get('[data-testid="cell-0-0"]').then(($cell) => {
-      const targetCellId =
-        $cell.attr('aria-disabled') === 'true' ? 'cell-0-3' : 'cell-0-0';
+    cy.get('[data-testid="cell-0-0"]').click();
+    cy.get('[data-testid="number-1"]').click();
+    cy.get('[aria-label="Row 1, column 1, value 1"]').should('exist');
 
-      cy.get(`[data-testid="${targetCellId}"]`).click();
-      cy.get('[data-testid="number-1"]').click();
-      cy.get('[data-testid="reset-board-button"]').click();
-      cy.get('[data-testid="reset-confirmation"]').should('exist');
-      cy.get('[data-testid="cancel-reset-button"]').click();
-      cy.get('[data-testid="reset-confirmation"]').should('not.exist');
+    cy.get('[data-testid="reset-board-button"]').click();
+    cy.get('[data-testid="reset-confirmation"]').should('exist');
+    cy.get('[data-testid="cancel-reset-button"]').click();
+    cy.get('[data-testid="reset-confirmation"]').should('not.exist');
+    cy.get('[aria-label="Row 1, column 1, value 1"]').should('exist');
 
-      cy.get('[data-testid="reset-board-button"]').click();
-      cy.get('[data-testid="confirm-reset-button"]').click();
-      cy.get('[data-testid="reset-confirmation"]').should('not.exist');
-    });
+    cy.get('[data-testid="reset-board-button"]').click();
+    cy.get('[data-testid="confirm-reset-button"]').click();
+    cy.get('[data-testid="reset-confirmation"]').should('not.exist');
+    cy.get('[aria-label="Row 1, column 1, empty"]').should('exist');
   });
 
   levels.forEach((level) => {
     it(`opens and plays accessible ${level.id}`, () => {
       cy.get('[data-testid="choose-level-button"]').click();
+      cy.get('[data-testid="level-select-screen"]').should('exist');
+      cy.get('[role="heading"]')
+        .contains('Choose from existing levels')
+        .should('exist');
       cy.get(`[data-testid="level-${level.id}"]`).click();
       cy.contains(
         `${level.size} x ${level.size} board, ${level.difficulty} difficulty`
@@ -58,9 +61,6 @@ describe('Sudoku levels', () => {
       cy.get(
         `[aria-label="${level.size} by ${level.size} sudoku board"]`
       ).should('exist');
-      cy.get(
-        `[aria-label="${level.size} x ${level.size} ${level.difficulty} level"]`
-      ).should('have.attr', 'role', 'tab');
       cy.get('[data-testid="sudoku-board"]').should('exist');
       cy.get('[data-testid^="cell-"]').should(
         'have.length',

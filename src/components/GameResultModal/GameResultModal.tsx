@@ -55,12 +55,13 @@ export function GameResultModal({
               </Pressable>
             ) : (
               <Pressable
+                accessibilityLabel="Retry"
                 accessibilityRole="button"
                 onPress={onRetry}
                 style={styles.primaryButton}
                 testID="retry-button"
               >
-                <Text style={styles.primaryButtonText}>Retry</Text>
+                <Text style={styles.primaryButtonText}>↻ Retry</Text>
               </Pressable>
             )}
 
@@ -70,7 +71,7 @@ export function GameResultModal({
               style={styles.secondaryButton}
               testID="main-menu-button"
             >
-              <Text style={styles.secondaryButtonText}>Main menu</Text>
+              <Text style={styles.secondaryButtonText}>Go to main menu</Text>
             </Pressable>
           </View>
         </View>

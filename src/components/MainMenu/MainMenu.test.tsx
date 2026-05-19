@@ -8,11 +8,8 @@ describe('MainMenu', () => {
     render(
       <MainMenu
         nextLevel={getLevelById('4x4-medium')}
-        selectedLevelId="4x4-easy"
-        showLevelPicker={false}
-        onSelectLevel={jest.fn()}
+        onChooseLevel={jest.fn()}
         onStartNextLevel={jest.fn()}
-        onToggleLevelPicker={jest.fn()}
       />
     );
 
@@ -26,18 +23,15 @@ describe('MainMenu', () => {
     expect(screen.getByText('Choose a level')).toBeOnTheScreen();
   });
 
-  it('starts the next level and toggles the picker', () => {
+  it('starts the next level and opens level selection', () => {
     const onStartNextLevel = jest.fn();
-    const onToggleLevelPicker = jest.fn();
+    const onChooseLevel = jest.fn();
 
     render(
       <MainMenu
         nextLevel={getLevelById('4x4-medium')}
-        selectedLevelId="4x4-easy"
-        showLevelPicker={false}
-        onSelectLevel={jest.fn()}
+        onChooseLevel={onChooseLevel}
         onStartNextLevel={onStartNextLevel}
-        onToggleLevelPicker={onToggleLevelPicker}
       />
     );
 
@@ -45,28 +39,6 @@ describe('MainMenu', () => {
     fireEvent.press(screen.getByText('Choose a level'));
 
     expect(onStartNextLevel).toHaveBeenCalledTimes(1);
-    expect(onToggleLevelPicker).toHaveBeenCalledTimes(1);
-  });
-
-  it('shows existing levels when requested', () => {
-    const onSelectLevel = jest.fn();
-
-    render(
-      <MainMenu
-        nextLevel={getLevelById('4x4-medium')}
-        selectedLevelId="4x4-easy"
-        showLevelPicker
-        onSelectLevel={onSelectLevel}
-        onStartNextLevel={jest.fn()}
-        onToggleLevelPicker={jest.fn()}
-      />
-    );
-
-    fireEvent.press(screen.getByLabelText('9 x 9 hard level'));
-
-    expect(screen.getByTestId('main-menu-levels')).toBeOnTheScreen();
-    expect(onSelectLevel).toHaveBeenCalledWith(
-      expect.objectContaining({ id: '9x9-hard' })
-    );
+    expect(onChooseLevel).toHaveBeenCalledTimes(1);
   });
 });

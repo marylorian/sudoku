@@ -34,10 +34,11 @@ export default StyleSheet.create({
     fontWeight: '700'
   },
   gameActions: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10
+    gap: 10,
+    justifyContent: 'space-between',
+    width: '100%'
   },
   secondaryButton: {
     alignItems: 'center',
@@ -54,6 +55,22 @@ export default StyleSheet.create({
     color: '#0f172a',
     fontSize: 15,
     fontWeight: '800'
+  },
+  iconButton: {
+    alignItems: 'center',
+    backgroundColor: '#f8fafc',
+    borderColor: '#94a3b8',
+    borderRadius: 8,
+    borderWidth: 1,
+    height: 42,
+    justifyContent: 'center',
+    width: 42
+  },
+  iconButtonText: {
+    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '900',
+    lineHeight: 26
   },
   confirmOverlay: {
     alignItems: 'center',
@@ -85,8 +102,6 @@ export default StyleSheet.create({
     lineHeight: 22
   },
   confirmActions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 10
   },
   dangerButton: {
@@ -96,7 +111,11 @@ export default StyleSheet.create({
     justifyContent: 'center',
     minHeight: 42,
     paddingHorizontal: 14,
-    paddingVertical: 9
+    paddingVertical: 9,
+    width: '100%'
+  },
+  confirmButton: {
+    width: '100%'
   },
   dangerButtonText: {
     color: '#ffffff',

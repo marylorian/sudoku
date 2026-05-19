@@ -2,14 +2,14 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   wrapper: {
-    gap: 20
+    gap: 18
   },
-  hero: {
-    gap: 10
+  header: {
+    gap: 8
   },
   title: {
     color: '#0f172a',
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: '900'
   },
   subtitle: {
@@ -18,18 +18,7 @@ export default StyleSheet.create({
     lineHeight: 22
   },
   actions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10
-  },
-  primaryButton: {
-    alignItems: 'center',
-    backgroundColor: '#14532d',
-    borderRadius: 8,
-    minHeight: 46,
-    justifyContent: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10
+    alignItems: 'flex-start'
   },
   secondaryButton: {
     alignItems: 'center',
@@ -37,19 +26,14 @@ export default StyleSheet.create({
     borderColor: '#94a3b8',
     borderRadius: 8,
     borderWidth: 1,
-    minHeight: 46,
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    minHeight: 44,
+    paddingHorizontal: 14,
     paddingVertical: 10
-  },
-  primaryButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '800'
   },
   secondaryButtonText: {
     color: '#0f172a',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800'
   }
 });

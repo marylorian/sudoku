@@ -3,7 +3,7 @@ import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import { GameResultModal } from '../GameResultModal';
-import { LevelPicker } from '../LevelPicker';
+import { LevelSelectScreen } from '../LevelSelectScreen';
 import { MainMenu } from '../MainMenu';
 import { NumberPad } from '../NumberPad';
 import { SudokuBoard } from '../SudokuBoard';
@@ -17,7 +17,7 @@ import { getLevelById } from '../../utils/getLevelById';
 
 const initialLevel = getLevelById('4x4-easy');
 
-type Screen = 'menu' | 'game';
+type Screen = 'menu' | 'levelSelect' | 'game';
 
 const getNextUnsolvedLevel = (solvedLevelIds: Set<string>): Level =>
   levels.find((item) => !solvedLevelIds.has(item.id)) ?? levels[0]!;
@@ -35,7 +35,6 @@ export function App() {
     row: number;
     col: number;
   } | null>(null);
-  const [showMenuLevelPicker, setShowMenuLevelPicker] = useState(false);
   const [solvedLevelIds, setSolvedLevelIds] = useState<Set<string>>(
     () => new Set()
   );
@@ -84,7 +83,6 @@ export function App() {
 
   const selectLevel = (nextLevel: Level) => {
     startLevel(nextLevel);
-    setShowMenuLevelPicker(false);
   };
 
   const openMainMenu = () => {
@@ -135,13 +133,14 @@ export function App() {
         {screen === 'menu' ? (
           <MainMenu
             nextLevel={nextUnsolvedLevel}
-            selectedLevelId={level.id}
-            showLevelPicker={showMenuLevelPicker}
-            onSelectLevel={selectLevel}
+            onChooseLevel={() => setScreen('levelSelect')}
             onStartNextLevel={startNextUnsolvedLevel}
-            onToggleLevelPicker={() =>
-              setShowMenuLevelPicker((currentValue) => !currentValue)
-            }
+          />
+        ) : screen === 'levelSelect' ? (
+          <LevelSelectScreen
+            selectedLevelId={level.id}
+            onBack={openMainMenu}
+            onSelectLevel={selectLevel}
           />
         ) : (
           <>
@@ -164,19 +163,15 @@ export function App() {
                 <Text style={styles.secondaryButtonText}>Main menu</Text>
               </Pressable>
               <Pressable
+                accessibilityLabel="Reset board"
                 accessibilityRole="button"
                 onPress={() => setShowResetConfirm(true)}
-                style={styles.secondaryButton}
+                style={styles.iconButton}
                 testID="reset-board-button"
               >
-                <Text style={styles.secondaryButtonText}>Reset board</Text>
+                <Text style={styles.iconButtonText}>↻</Text>
               </Pressable>
             </View>
-
-            <LevelPicker
-              selectedLevelId={level.id}
-              onSelectLevel={selectLevel}
-            />
 
             <View style={styles.statusRow}>
               <Text
@@ -240,7 +235,7 @@ export function App() {
               <Pressable
                 accessibilityRole="button"
                 onPress={() => setShowResetConfirm(false)}
-                style={styles.secondaryButton}
+                style={[styles.secondaryButton, styles.confirmButton]}
                 testID="cancel-reset-button"
               >
                 <Text style={styles.secondaryButtonText}>Cancel</Text>

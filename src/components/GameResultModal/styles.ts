@@ -27,8 +27,6 @@ export default StyleSheet.create({
     lineHeight: 22
   },
   actions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 10
   },
   primaryButton: {
@@ -38,7 +36,8 @@ export default StyleSheet.create({
     minHeight: 44,
     justifyContent: 'center',
     paddingHorizontal: 14,
-    paddingVertical: 10
+    paddingVertical: 10,
+    width: '100%'
   },
   secondaryButton: {
     alignItems: 'center',
@@ -49,7 +48,8 @@ export default StyleSheet.create({
     minHeight: 44,
     justifyContent: 'center',
     paddingHorizontal: 14,
-    paddingVertical: 10
+    paddingVertical: 10,
+    width: '100%'
   },
   primaryButtonText: {
     color: '#ffffff',
