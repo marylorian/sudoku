@@ -8,7 +8,11 @@ type Props = {
 
 export function NumberPad({ max, onChoose }: Props) {
   return (
-    <View accessibilityLabel="Number pad" style={styles.wrapper} testID="number-pad">
+    <View
+      accessibilityLabel="Number pad"
+      style={styles.wrapper}
+      testID="number-pad"
+    >
       {Array.from({ length: max }, (_item, index) => {
         const value = index + 1;
 

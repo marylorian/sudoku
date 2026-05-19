@@ -1,1 +1,1 @@
-export * from './NumberPad'
+export * from './NumberPad';

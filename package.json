@@ -2,15 +2,18 @@
   "name": "sudoku-levels",
   "version": "1.0.0",
   "private": true,
-  "main": "expo/AppEntry",
+  "main": "main.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
     "typecheck": "tsc --noEmit",
     "test": "jest",
+    "build": "expo export --platform web --output-dir dist",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "e2e": "node scripts/run-e2e.mjs",
@@ -42,12 +45,17 @@
     "jest": "^29.7.0",
     "jest-expo": "^50.0.4",
     "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
     "react-test-renderer": "18.2.0",
     "typescript": "^5.3.3"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
+      "prettier --write",
       "eslint --max-warnings=0"
+    ],
+    "*.{js,json,md,mjs,yml,yaml}": [
+      "prettier --write"
     ]
   },
   "overrides": {

@@ -39,14 +39,23 @@ const run = (command, args) =>
 
 const sendFile = async (requestUrl, response) => {
   const url = new URL(requestUrl ?? '/', `http://localhost:${port}`);
-  const requestPath = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
-  const filePath = resolve(dist, requestPath === sep ? 'index.html' : requestPath.slice(1));
-  const safePath = filePath.startsWith(dist) ? filePath : join(dist, 'index.html');
+  const requestPath = normalize(decodeURIComponent(url.pathname)).replace(
+    /^(\.\.[/\\])+/,
+    ''
+  );
+  const filePath = resolve(
+    dist,
+    requestPath === sep ? 'index.html' : requestPath.slice(1)
+  );
+  const safePath = filePath.startsWith(dist)
+    ? filePath
+    : join(dist, 'index.html');
 
   try {
     const bytes = await readFile(safePath);
     response.writeHead(200, {
-      'Content-Type': mimeTypes.get(extname(safePath)) ?? 'application/octet-stream'
+      'Content-Type':
+        mimeTypes.get(extname(safePath)) ?? 'application/octet-stream'
     });
     response.end(bytes);
   } catch {
@@ -58,7 +67,14 @@ const sendFile = async (requestUrl, response) => {
   }
 };
 
-await run('npx', ['expo', 'export', '--platform', 'web', '--output-dir', 'dist']);
+await run('npx', [
+  'expo',
+  'export',
+  '--platform',
+  'web',
+  '--output-dir',
+  'dist'
+]);
 
 const server = createServer((request, response) => {
   void sendFile(request.url, response);

@@ -3,17 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "types": [
-      "jest",
-      "node"
-    ]
+    "types": ["jest", "node"]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "cypress",
-    "cypress.config.ts"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["cypress", "cypress.config.ts"]
 }

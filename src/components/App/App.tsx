@@ -17,10 +17,16 @@ const initialLevel = getLevelById('4x4-easy');
 export function App() {
   const [level, setLevel] = useState<Level>(initialLevel);
   const [board, setBoard] = useState<Board>(() => createBoard(initialLevel));
-  const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
+  const [selectedCell, setSelectedCell] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
 
   const complete = useMemo(() => isBoardComplete(board), [board]);
-  const emptyCells = useMemo(() => board.flat().filter((cell) => cell.value === null).length, [board]);
+  const emptyCells = useMemo(
+    () => board.flat().filter((cell) => cell.value === null).length,
+    [board]
+  );
 
   const selectLevel = (nextLevel: Level) => {
     setLevel(nextLevel);
@@ -37,7 +43,9 @@ export function App() {
       return;
     }
 
-    setBoard((currentBoard) => updateCell(currentBoard, selectedCell.row, selectedCell.col, value));
+    setBoard((currentBoard) =>
+      updateCell(currentBoard, selectedCell.row, selectedCell.col, value)
+    );
   };
 
   return (
@@ -56,15 +64,28 @@ export function App() {
         <LevelPicker selectedLevelId={level.id} onSelectLevel={selectLevel} />
 
         <View style={styles.statusRow}>
-          <Text accessibilityLabel={`${emptyCells} empty cells remaining`} style={styles.statusText} testID="empty-cells">
+          <Text
+            accessibilityLabel={`${emptyCells} empty cells remaining`}
+            style={styles.statusText}
+            testID="empty-cells"
+          >
             Empty: {emptyCells}
           </Text>
-          <Text accessibilityLiveRegion="polite" style={styles.statusText} testID="completion-status">
+          <Text
+            accessibilityLiveRegion="polite"
+            style={styles.statusText}
+            testID="completion-status"
+          >
             {complete ? 'Solved' : 'In progress'}
           </Text>
         </View>
 
-        <SudokuBoard board={board} selectedCell={selectedCell} size={level.size} onSelectCell={selectCell} />
+        <SudokuBoard
+          board={board}
+          selectedCell={selectedCell}
+          size={level.size}
+          onSelectCell={selectCell}
+        />
         <NumberPad max={level.size} onChoose={chooseNumber} />
       </ScrollView>
     </SafeAreaView>

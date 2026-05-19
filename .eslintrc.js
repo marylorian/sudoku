@@ -1,6 +1,10 @@
 module.exports = {
   root: true,
-  extends: ['expo', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  extends: [
+    'expo',
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended'
+  ],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   env: {

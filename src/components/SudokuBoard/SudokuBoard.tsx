@@ -11,23 +11,36 @@ type Props = {
   onSelectCell: (cell: Cell) => void;
 };
 
-export function SudokuBoard({ board, size, selectedCell, onSelectCell }: Props) {
+export function SudokuBoard({
+  board,
+  size,
+  selectedCell,
+  onSelectCell
+}: Props) {
   const shape = getBoxShape(size);
 
   return (
-    <View accessibilityLabel={`${size} by ${size} sudoku board`} style={styles.board} testID="sudoku-board">
+    <View
+      accessibilityLabel={`${size} by ${size} sudoku board`}
+      style={styles.board}
+      testID="sudoku-board"
+    >
       {board.map((row) => (
         <View key={`row-${row[0]?.row ?? 0}`} style={styles.row}>
           {row.map((cell) => {
-            const selected = selectedCell?.row === cell.row && selectedCell.col === cell.col;
+            const selected =
+              selectedCell?.row === cell.row && selectedCell.col === cell.col;
             const editable = !cell.fixed;
-            const rightBoxEdge = (cell.col + 1) % shape.cols === 0 && cell.col < size - 1;
-            const bottomBoxEdge = (cell.row + 1) % shape.rows === 0 && cell.row < size - 1;
+            const rightBoxEdge =
+              (cell.col + 1) % shape.cols === 0 && cell.col < size - 1;
+            const bottomBoxEdge =
+              (cell.row + 1) % shape.rows === 0 && cell.row < size - 1;
 
             return (
               <Pressable
-                accessibilityLabel={`Row ${cell.row + 1}, column ${cell.col + 1}, ${cell.value ? `value ${cell.value}` : 'empty'
-                  }`}
+                accessibilityLabel={`Row ${cell.row + 1}, column ${cell.col + 1}, ${
+                  cell.value ? `value ${cell.value}` : 'empty'
+                }`}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: !editable, selected }}
                 disabled={!editable}
@@ -43,7 +56,9 @@ export function SudokuBoard({ board, size, selectedCell, onSelectCell }: Props) 
                 ]}
                 testID={`cell-${cell.row}-${cell.col}`}
               >
-                <Text style={[styles.cellText, cell.fixed && styles.fixedText]}>{cell.value ?? ''}</Text>
+                <Text style={[styles.cellText, cell.fixed && styles.fixedText]}>
+                  {cell.value ?? ''}
+                </Text>
               </Pressable>
             );
           })}

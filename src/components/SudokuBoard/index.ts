@@ -1,1 +1,1 @@
-export * from './SudokuBoard'
+export * from './SudokuBoard';

@@ -6,9 +6,7 @@
     "orientation": "portrait",
     "scheme": "sudokulevels",
     "userInterfaceStyle": "automatic",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.sudokulevels"

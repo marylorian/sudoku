@@ -25,13 +25,25 @@ describe('Sudoku levels', () => {
   levels.forEach((level) => {
     it(`opens and plays accessible ${level.id}`, () => {
       cy.get(`[data-testid="level-${level.id}"]`).click();
-      cy.contains(`${level.size} x ${level.size} board, ${level.difficulty} difficulty`).should('exist');
-      cy.get(`[aria-label="${level.size} by ${level.size} sudoku board"]`).should('exist');
-      cy.get(`[aria-label="${level.size} x ${level.size} ${level.difficulty} level"]`).should('have.attr', 'role', 'tab');
+      cy.contains(
+        `${level.size} x ${level.size} board, ${level.difficulty} difficulty`
+      ).should('exist');
+      cy.get(
+        `[aria-label="${level.size} by ${level.size} sudoku board"]`
+      ).should('exist');
+      cy.get(
+        `[aria-label="${level.size} x ${level.size} ${level.difficulty} level"]`
+      ).should('have.attr', 'role', 'tab');
       cy.get('[data-testid="sudoku-board"]').should('exist');
-      cy.get('[data-testid^="cell-"]').should('have.length', level.size * level.size);
+      cy.get('[data-testid^="cell-"]').should(
+        'have.length',
+        level.size * level.size
+      );
       cy.get('[data-testid="number-pad"]').within(() => {
-        cy.get('[data-testid^="number-"]').should('have.length', level.size + 1);
+        cy.get('[data-testid^="number-"]').should(
+          'have.length',
+          level.size + 1
+        );
       });
     });
   });

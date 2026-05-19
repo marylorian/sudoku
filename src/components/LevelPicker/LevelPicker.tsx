@@ -27,8 +27,12 @@ export function LevelPicker({ selectedLevelId, onSelectLevel }: Props) {
             style={[styles.levelButton, selected && styles.selectedLevel]}
             testID={`level-${level.id}`}
           >
-            <Text style={[styles.levelTitle, selected && styles.selectedText]}>{titleForLevel(level)}</Text>
-            <Text style={[styles.levelMeta, selected && styles.selectedText]}>{level.difficulty}</Text>
+            <Text style={[styles.levelTitle, selected && styles.selectedText]}>
+              {titleForLevel(level)}
+            </Text>
+            <Text style={[styles.levelMeta, selected && styles.selectedText]}>
+              {level.difficulty}
+            </Text>
           </Pressable>
         );
       })}
