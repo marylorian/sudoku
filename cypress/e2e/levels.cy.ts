@@ -16,14 +16,41 @@ describe('Sudoku levels', () => {
   });
 
   it('exposes accessible game landmarks and controls', () => {
+    cy.get('[data-testid="main-menu"]').should('exist');
     cy.get('[role="heading"]').contains('Sudoku Levels').should('exist');
+    cy.contains("Let's go").should('exist');
+    cy.contains('Choose a level').should('exist');
+
+    cy.get('[data-testid="start-next-level"]').click();
+
     cy.get('[aria-label="4 by 4 sudoku board"]').should('exist');
     cy.get('[aria-label="Number pad"]').should('exist');
     cy.get('[aria-label="Clear selected cell"]').should('exist');
+    cy.get('[data-testid="reset-board-button"]').should('exist');
+  });
+
+  it('confirms before resetting user-added numbers', () => {
+    cy.get('[data-testid="start-next-level"]').click();
+    cy.get('[data-testid="cell-0-0"]').then(($cell) => {
+      const targetCellId =
+        $cell.attr('aria-disabled') === 'true' ? 'cell-0-3' : 'cell-0-0';
+
+      cy.get(`[data-testid="${targetCellId}"]`).click();
+      cy.get('[data-testid="number-1"]').click();
+      cy.get('[data-testid="reset-board-button"]').click();
+      cy.get('[data-testid="reset-confirmation"]').should('exist');
+      cy.get('[data-testid="cancel-reset-button"]').click();
+      cy.get('[data-testid="reset-confirmation"]').should('not.exist');
+
+      cy.get('[data-testid="reset-board-button"]').click();
+      cy.get('[data-testid="confirm-reset-button"]').click();
+      cy.get('[data-testid="reset-confirmation"]').should('not.exist');
+    });
   });
 
   levels.forEach((level) => {
     it(`opens and plays accessible ${level.id}`, () => {
+      cy.get('[data-testid="choose-level-button"]').click();
       cy.get(`[data-testid="level-${level.id}"]`).click();
       cy.contains(
         `${level.size} x ${level.size} board, ${level.difficulty} difficulty`

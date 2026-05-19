@@ -22,3 +22,5 @@ export type BoxShape = {
   rows: number;
   cols: number;
 };
+
+export type GameResult = 'won' | 'lost';
