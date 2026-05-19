@@ -1,0 +1,12 @@
+node_modules/
+.expo/
+dist/
+web-build/
+coverage/
+cypress/videos/
+cypress/screenshots/
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+*.orig.*
