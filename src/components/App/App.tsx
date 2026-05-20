@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
@@ -9,18 +9,27 @@ import { NumberPad } from '../NumberPad';
 import { SudokuBoard } from '../SudokuBoard';
 import styles from './styles';
 import { levels } from '../../constants';
-import { Board, Cell, GameResult, Level } from '../../types';
+import { Board, Cell, GameResult, InProgressLevel, Level } from '../../types';
 import { createBoard } from '../../utils/createBoard';
 import { isBoardComplete } from '../../utils/isBoardComplete';
 import { updateCell } from '../../utils/updateCell';
 import { getLevelById } from '../../utils/getLevelById';
+import {
+  loadProgressState,
+  saveProgressState
+} from '../../utils/progressStorage';
 
 const initialLevel = getLevelById('4x4-easy');
 
 type Screen = 'menu' | 'levelSelect' | 'game';
 
-const getNextUnsolvedLevel = (solvedLevelIds: Set<string>): Level =>
-  levels.find((item) => !solvedLevelIds.has(item.id)) ?? levels[0]!;
+const getNextLevelToSee = (
+  seenLevelIds: Set<string>,
+  finishedLevelIds: Set<string>
+): Level =>
+  levels.find((item) => !seenLevelIds.has(item.id)) ??
+  levels.find((item) => !finishedLevelIds.has(item.id)) ??
+  levels[0]!;
 
 const getLevelAfter = (level: Level): Level | null => {
   const nextIndex = levels.findIndex((item) => item.id === level.id) + 1;
@@ -28,6 +37,7 @@ const getLevelAfter = (level: Level): Level | null => {
 };
 
 export function App() {
+  const userInteractedRef = useRef(false);
   const [screen, setScreen] = useState<Screen>('menu');
   const [level, setLevel] = useState<Level>(initialLevel);
   const [board, setBoard] = useState<Board>(() => createBoard(initialLevel));
@@ -35,17 +45,35 @@ export function App() {
     row: number;
     col: number;
   } | null>(null);
-  const [solvedLevelIds, setSolvedLevelIds] = useState<Set<string>>(
+  const [finishedLevelIds, setFinishedLevelIds] = useState<Set<string>>(
     () => new Set()
   );
+  const [seenLevelIds, setSeenLevelIds] = useState<Set<string>>(
+    () => new Set()
+  );
+  const [inProgressLevel, setInProgressLevel] =
+    useState<InProgressLevel | null>(null);
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [loadedProgress, setLoadedProgress] = useState(false);
 
   const complete = useMemo(() => isBoardComplete(board), [board]);
-  const nextUnsolvedLevel = useMemo(
-    () => getNextUnsolvedLevel(solvedLevelIds),
-    [solvedLevelIds]
+  const nextLevelToSee = useMemo(
+    () => getNextLevelToSee(seenLevelIds, finishedLevelIds),
+    [finishedLevelIds, seenLevelIds]
   );
+  const continueLevel = useMemo(() => {
+    if (!inProgressLevel || finishedLevelIds.has(inProgressLevel.levelId)) {
+      return null;
+    }
+
+    try {
+      return getLevelById(inProgressLevel.levelId);
+    } catch {
+      return null;
+    }
+  }, [finishedLevelIds, inProgressLevel]);
+  const primaryMenuLevel = continueLevel ?? nextLevelToSee;
   const nextSequentialLevel = useMemo(() => getLevelAfter(level), [level]);
   const emptyCells = useMemo(
     () => board.flat().filter((cell) => cell.value === null).length,
@@ -53,16 +81,58 @@ export function App() {
   );
 
   useEffect(() => {
+    let active = true;
+
+    void loadProgressState().then((progressState) => {
+      if (!active) {
+        return;
+      }
+
+      if (!userInteractedRef.current) {
+        const nextFinishedLevelIds = new Set(progressState.finishedLevelIds);
+        setFinishedLevelIds(nextFinishedLevelIds);
+        setSeenLevelIds(new Set(progressState.seenLevelIds));
+
+        if (
+          progressState.inProgress &&
+          !nextFinishedLevelIds.has(progressState.inProgress.levelId)
+        ) {
+          setInProgressLevel(progressState.inProgress);
+        }
+      }
+
+      setLoadedProgress(true);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!loadedProgress) {
+      return;
+    }
+
+    void saveProgressState({
+      finishedLevelIds: Array.from(finishedLevelIds),
+      seenLevelIds: Array.from(seenLevelIds),
+      inProgress: inProgressLevel
+    });
+  }, [finishedLevelIds, inProgressLevel, loadedProgress, seenLevelIds]);
+
+  useEffect(() => {
     if (screen !== 'game' || gameResult) {
       return;
     }
 
     if (complete) {
-      setSolvedLevelIds((currentLevelIds) => {
+      setFinishedLevelIds((currentLevelIds) => {
         const nextLevelIds = new Set(currentLevelIds);
         nextLevelIds.add(level.id);
         return nextLevelIds;
       });
+      setInProgressLevel(null);
       setGameResult('won');
       return;
     }
@@ -72,12 +142,22 @@ export function App() {
     }
   }, [complete, emptyCells, gameResult, level.id, screen]);
 
-  const startLevel = (nextLevel: Level) => {
+  const startLevel = (nextLevel: Level, nextBoard = createBoard(nextLevel)) => {
+    userInteractedRef.current = true;
     setLevel(nextLevel);
-    setBoard(createBoard(nextLevel));
+    setBoard(nextBoard);
     setSelectedCell(null);
     setGameResult(null);
     setShowResetConfirm(false);
+    setSeenLevelIds((currentLevelIds) => {
+      const nextLevelIds = new Set(currentLevelIds);
+      nextLevelIds.add(nextLevel.id);
+      return nextLevelIds;
+    });
+    setInProgressLevel({
+      levelId: nextLevel.id,
+      board: nextBoard
+    });
     setScreen('game');
   };
 
@@ -101,9 +181,21 @@ export function App() {
       return;
     }
 
-    setBoard((currentBoard) =>
-      updateCell(currentBoard, selectedCell.row, selectedCell.col, value)
-    );
+    setBoard((currentBoard) => {
+      const nextBoard = updateCell(
+        currentBoard,
+        selectedCell.row,
+        selectedCell.col,
+        value
+      );
+
+      setInProgressLevel({
+        levelId: level.id,
+        board: nextBoard
+      });
+
+      return nextBoard;
+    });
   };
 
   const retryLevel = () => {
@@ -111,13 +203,23 @@ export function App() {
   };
 
   const resetBoard = () => {
-    setBoard(createBoard(level));
+    const nextBoard = createBoard(level);
+    setBoard(nextBoard);
+    setInProgressLevel({
+      levelId: level.id,
+      board: nextBoard
+    });
     setSelectedCell(null);
     setShowResetConfirm(false);
   };
 
-  const startNextUnsolvedLevel = () => {
-    startLevel(nextUnsolvedLevel);
+  const startPrimaryMenuLevel = () => {
+    if (continueLevel && inProgressLevel) {
+      startLevel(continueLevel, inProgressLevel.board);
+      return;
+    }
+
+    startLevel(nextLevelToSee);
   };
 
   const startNextSequentialLevel = () => {
@@ -132,9 +234,10 @@ export function App() {
       <ScrollView contentContainerStyle={styles.container}>
         {screen === 'menu' ? (
           <MainMenu
-            nextLevel={nextUnsolvedLevel}
+            primaryLevel={primaryMenuLevel}
+            shouldContinue={Boolean(continueLevel)}
             onChooseLevel={() => setScreen('levelSelect')}
-            onStartNextLevel={startNextUnsolvedLevel}
+            onPrimaryAction={startPrimaryMenuLevel}
           />
         ) : screen === 'levelSelect' ? (
           <LevelSelectScreen
@@ -155,12 +258,13 @@ export function App() {
 
             <View style={styles.gameActions}>
               <Pressable
+                accessibilityLabel="Go to main menu"
                 accessibilityRole="button"
                 onPress={openMainMenu}
-                style={styles.secondaryButton}
+                style={styles.iconButton}
                 testID="game-main-menu-button"
               >
-                <Text style={styles.secondaryButtonText}>Main menu</Text>
+                <Text style={styles.iconButtonText}>←</Text>
               </Pressable>
               <Pressable
                 accessibilityLabel="Reset board"

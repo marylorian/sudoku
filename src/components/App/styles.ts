@@ -6,6 +6,7 @@ export default StyleSheet.create({
     flex: 1
   },
   container: {
+    flexGrow: 1,
     gap: 18,
     padding: 20,
     paddingBottom: 32

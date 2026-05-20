@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { LevelPicker } from '../LevelPicker';
-import type { Level } from '../../types';
+import { difficulties, levels } from '../../constants';
+import type { Difficulty, Level } from '../../types';
 import styles from './styles';
 
 type Props = {
@@ -15,6 +17,12 @@ export function LevelSelectScreen({
   onBack,
   onSelectLevel
 }: Props) {
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<Difficulty | null>(null);
+  const filteredLevels = selectedDifficulty
+    ? levels.filter((level) => level.difficulty === selectedDifficulty)
+    : [];
+
   return (
     <View style={styles.wrapper} testID="level-select-screen">
       <View style={styles.header}>
@@ -28,19 +36,59 @@ export function LevelSelectScreen({
 
       <View style={styles.actions}>
         <Pressable
+          accessibilityLabel="Go to main menu"
           accessibilityRole="button"
           onPress={onBack}
-          style={styles.secondaryButton}
+          style={styles.iconButton}
           testID="back-to-menu-button"
         >
-          <Text style={styles.secondaryButtonText}>Main menu</Text>
+          <Text style={styles.iconButtonText}>←</Text>
         </Pressable>
       </View>
 
-      <LevelPicker
-        selectedLevelId={selectedLevelId}
-        onSelectLevel={onSelectLevel}
-      />
+      <View style={styles.difficultySection}>
+        <Text style={styles.sectionTitle}>Choose difficulty</Text>
+        <View style={styles.difficultyOptions}>
+          {difficulties.map((difficulty) => {
+            const selected = difficulty === selectedDifficulty;
+
+            return (
+              <Pressable
+                accessibilityLabel={`${difficulty} difficulty`}
+                accessibilityRole="button"
+                accessibilityState={{ selected }}
+                key={difficulty}
+                onPress={() => setSelectedDifficulty(difficulty)}
+                style={[
+                  styles.difficultyButton,
+                  selected && styles.selectedDifficultyButton
+                ]}
+                testID={`difficulty-${difficulty}`}
+              >
+                <Text
+                  style={[
+                    styles.difficultyButtonText,
+                    selected && styles.selectedDifficultyButtonText
+                  ]}
+                >
+                  {difficulty}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
+      {selectedDifficulty ? (
+        <View style={styles.levelSection} testID="filtered-levels">
+          <Text style={styles.sectionTitle}>Choose level</Text>
+          <LevelPicker
+            levels={filteredLevels}
+            selectedLevelId={selectedLevelId}
+            onSelectLevel={onSelectLevel}
+          />
+        </View>
+      ) : null}
     </View>
   );
 }

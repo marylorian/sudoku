@@ -24,3 +24,14 @@ export type BoxShape = {
 };
 
 export type GameResult = 'won' | 'lost';
+
+export type InProgressLevel = {
+  levelId: string;
+  board: Board;
+};
+
+export type ProgressState = {
+  finishedLevelIds: string[];
+  seenLevelIds: string[];
+  inProgress: InProgressLevel | null;
+};

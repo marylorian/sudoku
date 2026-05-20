@@ -2,16 +2,21 @@ import { Pressable, Text, View } from 'react-native';
 
 import styles from './styles';
 import { Level } from '../../types';
-import { levels } from '../../constants';
+import { levels as allLevels } from '../../constants';
 
 type Props = {
   selectedLevelId: string;
+  levels?: Level[];
   onSelectLevel: (level: Level) => void;
 };
 
 const titleForLevel = (level: Level): string => `${level.size} x ${level.size}`;
 
-export function LevelPicker({ selectedLevelId, onSelectLevel }: Props) {
+export function LevelPicker({
+  selectedLevelId,
+  levels = allLevels,
+  onSelectLevel
+}: Props) {
   return (
     <View accessibilityRole="tablist" style={styles.wrapper}>
       {levels.map((level) => {

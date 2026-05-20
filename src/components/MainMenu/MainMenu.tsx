@@ -4,14 +4,16 @@ import type { Level } from '../../types';
 import styles from './styles';
 
 type Props = {
-  nextLevel: Level;
-  onStartNextLevel: () => void;
+  primaryLevel: Level;
+  shouldContinue: boolean;
+  onPrimaryAction: () => void;
   onChooseLevel: () => void;
 };
 
 export function MainMenu({
-  nextLevel,
-  onStartNextLevel,
+  primaryLevel,
+  shouldContinue,
+  onPrimaryAction,
   onChooseLevel
 }: Props) {
   return (
@@ -21,19 +23,27 @@ export function MainMenu({
           Sudoku Levels
         </Text>
         <Text style={styles.subtitle}>
-          Next up: {nextLevel.size} x {nextLevel.size}, {nextLevel.difficulty}{' '}
-          difficulty
+          {shouldContinue ? 'In progress' : 'Next up'}: {primaryLevel.size} x{' '}
+          {primaryLevel.size}, {primaryLevel.difficulty} difficulty
         </Text>
       </View>
 
       <View style={styles.actions}>
         <Pressable
           accessibilityRole="button"
-          onPress={onStartNextLevel}
+          onPress={onPrimaryAction}
           style={styles.primaryButton}
           testID="start-next-level"
         >
-          <Text style={styles.primaryButtonText}>Let's go</Text>
+          <Text style={styles.primaryButtonText}>
+            {shouldContinue ? 'Continue' : "Let's go"}
+          </Text>
+          {shouldContinue ? (
+            <Text style={styles.primaryButtonMeta}>
+              {primaryLevel.size} x {primaryLevel.size},{' '}
+              {primaryLevel.difficulty}
+            </Text>
+          ) : null}
         </Pressable>
 
         <Pressable

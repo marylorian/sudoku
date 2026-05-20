@@ -26,6 +26,7 @@ describe('Sudoku levels', () => {
     cy.get('[aria-label="4 by 4 sudoku board"]').should('exist');
     cy.get('[aria-label="Number pad"]').should('exist');
     cy.get('[aria-label="Clear selected cell"]').should('exist');
+    cy.get('[aria-label="Go to main menu"]').should('exist');
     cy.get('[data-testid="reset-board-button"]').should('exist');
   });
 
@@ -47,6 +48,20 @@ describe('Sudoku levels', () => {
     cy.get('[aria-label="Row 1, column 1, empty"]').should('exist');
   });
 
+  it('continues an unfinished level from the main menu', () => {
+    cy.get('[data-testid="start-next-level"]').click();
+    cy.get('[data-testid="game-main-menu-button"]').click();
+
+    cy.contains('Continue').should('exist');
+    cy.contains('4 x 4, easy').should('exist');
+    cy.contains("Let's go").should('not.exist');
+
+    cy.contains('Continue').click();
+
+    cy.contains('4 x 4 board, easy difficulty').should('exist');
+    cy.get('[aria-label="4 by 4 sudoku board"]').should('exist');
+  });
+
   levels.forEach((level) => {
     it(`opens and plays accessible ${level.id}`, () => {
       cy.get('[data-testid="choose-level-button"]').click();
@@ -54,6 +69,8 @@ describe('Sudoku levels', () => {
       cy.get('[role="heading"]')
         .contains('Choose from existing levels')
         .should('exist');
+      cy.get(`[data-testid="difficulty-${level.difficulty}"]`).click();
+      cy.get('[data-testid="filtered-levels"]').should('exist');
       cy.get(`[data-testid="level-${level.id}"]`).click();
       cy.contains(
         `${level.size} x ${level.size} board, ${level.difficulty} difficulty`

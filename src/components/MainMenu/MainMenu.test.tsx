@@ -7,9 +7,10 @@ describe('MainMenu', () => {
   it('renders the next level and primary actions', () => {
     render(
       <MainMenu
-        nextLevel={getLevelById('4x4-medium')}
+        primaryLevel={getLevelById('4x4-medium')}
+        shouldContinue={false}
         onChooseLevel={jest.fn()}
-        onStartNextLevel={jest.fn()}
+        onPrimaryAction={jest.fn()}
       />
     );
 
@@ -24,21 +25,37 @@ describe('MainMenu', () => {
   });
 
   it('starts the next level and opens level selection', () => {
-    const onStartNextLevel = jest.fn();
+    const onPrimaryAction = jest.fn();
     const onChooseLevel = jest.fn();
 
     render(
       <MainMenu
-        nextLevel={getLevelById('4x4-medium')}
+        primaryLevel={getLevelById('4x4-medium')}
+        shouldContinue={false}
         onChooseLevel={onChooseLevel}
-        onStartNextLevel={onStartNextLevel}
+        onPrimaryAction={onPrimaryAction}
       />
     );
 
     fireEvent.press(screen.getByText("Let's go"));
     fireEvent.press(screen.getByText('Choose a level'));
 
-    expect(onStartNextLevel).toHaveBeenCalledTimes(1);
+    expect(onPrimaryAction).toHaveBeenCalledTimes(1);
     expect(onChooseLevel).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows continue with level info for in-progress levels', () => {
+    render(
+      <MainMenu
+        primaryLevel={getLevelById('6x6-hard')}
+        shouldContinue
+        onChooseLevel={jest.fn()}
+        onPrimaryAction={jest.fn()}
+      />
+    );
+
+    expect(screen.getByText('Continue')).toBeOnTheScreen();
+    expect(screen.getByText('6 x 6, hard')).toBeOnTheScreen();
+    expect(screen.queryByText("Let's go")).toBeNull();
   });
 });
