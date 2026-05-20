@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Sudoku Levels",
-    "slug": "sudoku-levels",
+    "slug": "sudoku",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "sudokulevels",
@@ -22,8 +22,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "replace-with-your-eas-project-id"
+        "projectId": "7d548e7a-47a8-489b-9420-bd627147c5c2"
       }
-    }
+    },
+    "owner": "marylorians-organization"
   }
 }
