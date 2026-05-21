@@ -7,12 +7,20 @@
     "scheme": "sudokulevels",
     "userInterfaceStyle": "automatic",
     "assetBundlePatterns": ["**/*"],
+    "splash": {
+      "backgroundColor": "#f8fafc",
+      "resizeMode": "contain"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.sudokulevels"
     },
     "android": {
       "package": "com.example.sudokulevels",
+      "splash": {
+        "backgroundColor": "#f8fafc",
+        "resizeMode": "contain"
+      },
       "adaptiveIcon": {
         "backgroundColor": "#f8fafc"
       }
